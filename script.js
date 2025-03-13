@@ -1,24 +1,88 @@
 const cloudName = "dddhappm3";
 const uploadPreset = "ml_default";
 
+
+const categoryColors = {
+
+  armchairs: [
+    "cloud-beige",
+    "yellow-pear",
+    "rusty-red-wool",
+    "beige-wool",
+    "blueberry-pie-wool",
+  ],
+  accessories: ["yellow", "forest-green", "blueberry", "piazza-beige"],
+  sofas: ["beige", "light-grey", "graphite-black"],
+  beds: ["walnut", "oak"],
+  storage: ["oak", "black-oak", "blueberry", "vulcano-black"],
+  tvStands: ["terracotta-blush", "vulcano-black", "almond-grey"],
+  outdoor: ["vulcano-black", "forest-green", "orange-peel"],
+};
+
+
+const categorySelect = document.getElementById("category");
+const colorSelect = document.getElementById("color");
 const uploadForm = document.getElementById("upload-form");
 const fileInput = document.getElementById("file-input");
 const progressContainer = document.getElementById("progress-container");
 const statusText = document.getElementById("status");
 
+Object.keys(categoryColors).forEach((category) => {
+  const option = document.createElement("option");
+  option.value = category;
+  option.textContent = category;
+  categorySelect.appendChild(option);
+});
+
+categorySelect.addEventListener("change", function () {
+  const selectedCategory = this.value;
+  colorSelect.innerHTML = '<option value="">Select a color</option>';
+  colorSelect.disabled = !selectedCategory;
+
+  if (selectedCategory) {
+    categoryColors[selectedCategory].forEach((color) => {
+      const option = document.createElement("option");
+      option.value = color;
+      option.textContent = color;
+      colorSelect.appendChild(option);
+    });
+  }
+});
+
+
 uploadForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  const category = categorySelect.value;
+  const color = colorSelect.value;
   const files = fileInput.files;
+
+  if (!category || !color) {
+    statusText.textContent = "Please select a category and a color 🙂";
+    return;
+  }
+
   if (files.length === 0) {
-    statusText.textContent = "Please select at least one image.";
+    statusText.textContent = "Please select at least one image";
     return;
   }
 
   statusText.textContent = "Uploading...";
   progressContainer.innerHTML = "";
 
-  const progressBars = Array.from(files).map((file) => {
+  const uploadPromises = Array.from(files).map((file) => {
+
+    const productName = file.name.split("-")[0].trim();
+
+
+    const folderPath = `categories/${category}/${productName}/${color}`;
+
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
+    formData.append("folder", folderPath);
+
     const progressItem = document.createElement("div");
     progressItem.className = "progress-item";
 
@@ -36,45 +100,25 @@ uploadForm.addEventListener("submit", async (e) => {
     progressItem.appendChild(progressBar);
     progressContainer.appendChild(progressItem);
 
-    return { file, progressItem, progressBarFill };
+    return axios.post(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      formData,
+      {
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          progressBarFill.style.width = `${percentCompleted}%`;
+        },
+      }
+    );
   });
 
   try {
-    const uploadPromises = progressBars.map(
-      ({ file, progressItem, progressBarFill }) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", uploadPreset);
-
-        return axios
-          .post(
-            `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-            formData,
-            {
-              onUploadProgress: (progressEvent) => {
-                const percentCompleted = Math.round(
-                  (progressEvent.loaded * 100) / progressEvent.total
-                );
-                progressBarFill.style.width = `${percentCompleted}%`;
-              },
-            }
-          )
-          .then((response) => {
-            progressItem.style.display = "none";
-            return response;
-          });
-      }
-    );
-
-    const results = await Promise.all(uploadPromises);
-
-    //  results.forEach((response) => {
-    //   console.log('Uploaded image URL:', response.data.secure_url);
-    // });
-
+    await Promise.all(uploadPromises);
     statusText.textContent = `${files.length} images uploaded successfully!`;
   } catch (error) {
-    console.error("Error uploading images:", error);
-    statusText.textContent = "An error occurred. Please try again.";
+    console.error("Upload failed:", error);
+    statusText.textContent = "Error! Please try again.";
   }
 });
