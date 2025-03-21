@@ -12,7 +12,7 @@ const categoryColors = {
     "blueberry-pie-wool",
   ],
   accessories: ["yellow", "forest-green", "blueberry", "piazza-beige"],
-  sofas: ["beige", "light-grey", "graphite-black"],
+  sofas: ["beige", "light-grey", "graphite-black", "dark","light blue","dark blue"],
   beds: ["walnut", "oak"],
   storage: ["oak", "black-oak", "blueberry", "vulcano-black"],
   tvStands: ["terracotta-blush", "vulcano-black", "almond-grey"],
