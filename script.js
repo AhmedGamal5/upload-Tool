@@ -1,9 +1,7 @@
 const cloudName = "dddhappm3";
 const uploadPreset = "ml_default";
 
-
 const categoryColors = {
-
   armchairs: [
     "cloud-beige",
     "yellow-pear",
@@ -12,13 +10,22 @@ const categoryColors = {
     "blueberry-pie-wool",
   ],
   accessories: ["yellow", "forest-green", "blueberry", "piazza-beige"],
-  sofas: ["beige", "light-grey", "graphite-black", "dark","light blue","dark blue"],
+  sofas: [
+    "beige",
+    "light-grey",
+    "graphite-black",
+    "dark",
+    "light blue",
+    "dark blue",
+    "dark gray",
+    "light green",
+    "dark green",
+  ],
   beds: ["walnut", "oak"],
   storage: ["oak", "black-oak", "blueberry", "vulcano-black"],
   tvStands: ["terracotta-blush", "vulcano-black", "almond-grey"],
   outdoor: ["vulcano-black", "forest-green", "orange-peel"],
 };
-
 
 const categorySelect = document.getElementById("category");
 const colorSelect = document.getElementById("color");
@@ -49,7 +56,6 @@ categorySelect.addEventListener("change", function () {
   }
 });
 
-
 uploadForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -71,12 +77,9 @@ uploadForm.addEventListener("submit", async (e) => {
   progressContainer.innerHTML = "";
 
   const uploadPromises = Array.from(files).map((file) => {
-
     const productName = file.name.split("-")[0].trim();
 
-
     const folderPath = `categories/${category}/${productName}/${color}`;
-
 
     const formData = new FormData();
     formData.append("file", file);
