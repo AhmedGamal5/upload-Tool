@@ -27,7 +27,7 @@ const categoryColors = {
   ],
   beds: ["walnut", "oak","dark gray","light blue","white stained","pine"],
   storage: ["oak", "black-oak", "blueberry", "vulcano-black","black-brown","white"],
-  tvStands: ["terracotta-blush", "vulcano-black", "almond-grey"],
+  tvStands: ["terracotta-blush", "vulcano-black", "almond-grey","black-brown","lappviken","black"],
   outdoor: ["vulcano-black", "forest-green", "orange-peel"],
 };
 
