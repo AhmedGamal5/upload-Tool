@@ -8,6 +8,10 @@ const categoryColors = {
     "rusty-red-wool",
     "beige-wool",
     "blueberry-pie-wool",
+    "dark gray",
+    "light-grey",
+    "dark yellow",
+    "light green"
   ],
   accessories: ["yellow", "forest-green", "blueberry", "piazza-beige"],
   sofas: [
@@ -21,7 +25,7 @@ const categoryColors = {
     "light green",
     "dark green",
   ],
-  beds: ["walnut", "oak"],
+  beds: ["walnut", "oak","dark gray","light blue","white stained","pine"],
   storage: ["oak", "black-oak", "blueberry", "vulcano-black"],
   tvStands: ["terracotta-blush", "vulcano-black", "almond-grey"],
   outdoor: ["vulcano-black", "forest-green", "orange-peel"],
